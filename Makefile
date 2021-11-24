@@ -502,6 +502,7 @@ bedrock2-compiler: bedrock2
 	$(MAKE) --no-print-directory -C $(BEDROCK2_ROOT_FOLDER) compiler_ex
 
 clean-bedrock2-compiler:
+	$(MAKE) --no-print-directory -C $(BEDROCK2_ROOT_FOLDER) clean_deps
 	$(MAKE) --no-print-directory -C $(BEDROCK2_ROOT_FOLDER) clean_compiler
 
 install-bedrock2-compiler:
