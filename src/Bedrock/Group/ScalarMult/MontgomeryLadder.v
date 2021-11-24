@@ -261,6 +261,7 @@ Section __.
 
     Hint Extern 8 (word.unsigned (word.of_Z _) = _) =>
     simple eapply word_unsigned_of_Z_eq; [ ZnWords |] : compiler.
+    Hint Unfold word.b2w : compiler_side_conditions.
     
     Derive montladder_body SuchThat
            (let args := ["OUT"; "K"; "U"] in
@@ -289,22 +290,6 @@ Section __.
       }
       solve[repeat compile_step].
       repeat compile_step.
-      unfold v6.
-      compile_step.
-      solve[repeat compile_step].
-      solve[repeat compile_step].
-      solve[repeat compile_step].
-      2:{
-        instantiate (1:=word.of_Z (Z.of_nat i)).
-        rewrite word.unsigned_of_Z.
-        rewrite word.wrap_small; auto.
-        pose proof scalarbits_bound.
-        lia.
-      }
-      solve[repeat compile_step].
-      compile_step.
-      compile_step.        
-      solve[repeat compile_step].
       {
         cbn [P2.car P2.cdr seps].
         unfold v8 in *.
