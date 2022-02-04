@@ -41,7 +41,7 @@ Section Representation.
     fun ws =>
       F.of_Z _ (Positional.eval weight n (eval_transformation (map word.unsigned ws))).
 
-  Definition eval_bytes : list byte -> F :=
+  Definition eval_bytes : list byte -> F M_pos :=
     fun bs =>
       F.of_Z _ (Positional.eval
                            (ModOps.weight 8 1)

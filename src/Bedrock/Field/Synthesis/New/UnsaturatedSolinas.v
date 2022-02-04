@@ -490,8 +490,8 @@ Section UnsaturatedSolinas.
       handle_side_conditions; [ loosen_bounds | bounds_length | | ].
     { (* output *value* is correct *)
       intros. specialize_correctness_hyp Hcorrect.
-      prove_value_correct Hcorrect.
-    }
+      destruct Hcorrect.
+      FtoZ. simpl_map_unsigned. congruence. }
     { (* output *bounds* are correct *)
       intros. apply Hcorrect; auto. }
   Qed.

@@ -1069,7 +1069,7 @@ Section __.
   Lemma selectznz_correct res
         (Hres : selectznz = Success res)
     : selectznz_correct saturated_bounds (Interp res).
-  Proof using Type. prove_correctness I. Qed.
+  Proof using Type. prove_correctness I. eapply select_eq; eauto. Qed.
 
   Lemma Wf_selectznz res (Hres : selectznz = Success res) : Wf res.
   Proof using Type. prove_pipeline_wf (). Qed.
