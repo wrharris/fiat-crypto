@@ -1,6 +1,7 @@
 Require Import Rupicola.Lib.Api.
 Require Import Rupicola.Lib.Alloc.
-Require Import Crypto.Bedrock.Specs.Field.
+Require Import Crypto.Bedrock.Specs.AbstractField.
+Require Import Crypto.Bedrock.Specs.PrimeField.
 Require Import Crypto.Arithmetic.PrimeFieldTheorems.
 Local Open Scope Z_scope.
 
@@ -13,8 +14,11 @@ Section Compile.
   Context {locals_ok : map.ok locals}.
   Context {env_ok : map.ok env}.
   Context {ext_spec_ok : Semantics.ext_spec.ok ext_spec}.
-  Context {field_parameters : FieldParameters}
-          {field_representaton : FieldRepresentation}
+  Context {prime_field_parameters : PrimeFieldParameters}.
+
+  Local Instance field_parameters : FieldParameters := PrimeField.prime_field_parameters.
+
+  Context {field_representaton : FieldRepresentation}
           {field_representation_ok : FieldRepresentation_ok}.
 
   Definition maybe_bounded mbounds v :=
@@ -166,15 +170,14 @@ Section Compile.
       (FElem (Some un_xbounds) x_ptr x * Rin)%sep m ->
       map.get l x_var = Some x_ptr ->
 
-      (let v := v in
-       forall m',
-         sep (FElem (Some un_outbounds) out_ptr v) Rout m' ->
+      (forall m',
+         sep (FElem (Some un_outbounds) out_ptr (un_model x)) Rout m' ->
          (<{ Trace := tr;
              Memory := m';
              Locals := l;
              Functions := functions }>
           k_impl
-          <{ pred (k v eq_refl) }>)) ->
+          <{ pred (k (un_model x) eq_refl) }>)) ->
       <{ Trace := tr;
          Memory := m;
          Locals := l;
@@ -318,18 +321,19 @@ Section Compile.
     repeat straightline'.
     unfold FElem in *.
     sepsimpl.
-    prove_field_compilation.
-    apply H3.
-
-    eapply Proper_sep_impl1; eauto.
-    2:exact(fun a b => b).
-    intros m' H'.
-    match goal with H : _ |- _ =>
-                    rewrite word.of_Z_unsigned in H end.
-    SpecializeBy.specialize_by_assumption.
-    eexists;
-      sepsimpl;
-      eauto.
+    repeat straightline'.
+    straightline_call; [ssplit; eapply H4 |].
+      repeat straightline. 
+      apply H3.
+      eapply Proper_sep_impl1; eauto.
+      2: exact(fun a b => b).
+      intros m' H'. subst.
+      match goal with H : _ |- _ =>
+                      rewrite word.of_Z_unsigned in H end.
+      SpecializeBy.specialize_by_assumption.
+      eexists;
+        sepsimpl;
+        eauto. 
   Qed.
 
   Local Hint Extern 1 (spec_of _) => (simple refine (@spec_of_from_bytes _ _ _ _ _ _ _ _)) : typeclass_instances.
@@ -429,7 +433,7 @@ End Compile.
 
 
 (*must be higher priority than compile_mul*)
-#[export] Hint Extern 6 (WeakestPrecondition.cmd _ _ _ _ _ (_ (nlet_eq _ (a24 * _)%F _))) =>
+(* #[export] Hint Extern 6 (WeakestPrecondition.cmd _ _ _ _ _ (_ (nlet_eq _ (a24 * _)%F _))) =>
 simple eapply compile_scmula24; shelve : compiler.
 
 #[export] Hint Extern 8 (WeakestPrecondition.cmd _ _ _ _ _ (_ (nlet_eq _ (_ * _)%F _))) =>
@@ -443,7 +447,7 @@ simple eapply compile_square; shelve : compiler.
 #[export] Hint Extern 8 (WeakestPrecondition.cmd _ _ _ _ _ (_ (nlet_eq _ (F.of_Z M_pos _) _))) =>
 simple eapply compile_from_word; shelve : compiler.
 #[export] Hint Extern 10 (WeakestPrecondition.cmd _ _ _ _ _ (_ (nlet_eq _ ?v _))) =>
-is_var v; simple eapply compile_felem_copy; shelve : compiler.
+is_var v; simple eapply compile_felem_copy; shelve : compiler. *)
 
 
 #[export] Hint Immediate relax_bounds_FElem : ecancel_impl.

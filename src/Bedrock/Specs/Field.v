@@ -1,4 +1,4 @@
-Require Import coqutil.Byte.
+(* Require Import coqutil.Byte.
 Require Import Rupicola.Lib.Api.
 Require Import Crypto.Algebra.Hierarchy.
 Require Import Crypto.Arithmetic.PrimeFieldTheorems.
@@ -296,4 +296,4 @@ Section SpecProperties.
 
   Lemma M_nonzero : M <> 0.
   Proof. cbv [M]. congruence. Qed.
-End SpecProperties.
+End SpecProperties. *)
