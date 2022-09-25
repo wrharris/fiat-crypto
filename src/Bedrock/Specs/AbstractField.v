@@ -48,6 +48,7 @@ Section FieldSpecs.
       feval : felem -> F;
 
       feval_bytes : list byte -> F;
+      fencode_bytes : F -> list byte;
       felem_size_in_words : nat;
       felem_size_in_bytes : Z := Z.of_nat felem_size_in_words * bytes_per_word width; (* for stack allocation *)
       encoded_felem_size_in_bytes : nat; (* number of bytes when serialized *)
@@ -225,8 +226,17 @@ Section FieldSpecs.
           (exists Ra, (FElem px x * Ra)%sep mem)
           /\ (FElemBytes pout out * Rr)%sep mem;
         ensures tr' mem' :=
-          tr = tr' /\ 
+          tr = tr' /\
           exists bs,
+            (* This condition is not as strong as the one on master, which specifies exactly how to convert, and it's not strong enough for the compilation lemma. However, we can't specify how to convert without F.to_Z in scope. Two options:
+
+             1. Prove a util lemma about Z_to_bytes (F.to_Z (feval_bytes x)) = x.
+             2. Add some kind of conversion to Z to the field rep.
+
+Disadvantage of (1) is we were supposed to use abstract field. But I'm not sure if that's possible anyway?
+
+For (2), currently we can get bytes to F but not the other way around.
+             *)
             feval x = feval_bytes bs /\
             (FElemBytes pout bs * Rr)%sep mem' }.
 

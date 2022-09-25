@@ -382,6 +382,9 @@ Section Compile.
   Qed.
 
   Local Hint Extern 1 (spec_of _) => (simple refine (@spec_of_to_bytes _ _ _ _ _ _ _ _)) : typeclass_instances.
+
+  Lemma F_to_Z_to_bytes x : Z_to_bytes (F.to_Z x) = 
+
   Lemma compile_to_bytes {tr m l functions} x :
     let v : list _ := Z_to_bytes (F.to_Z x) encoded_felem_size_in_bytes in
     forall P (pred: P v -> predicate) (k: nlet_eq_k P v) k_impl
