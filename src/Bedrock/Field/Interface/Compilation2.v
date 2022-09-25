@@ -383,10 +383,8 @@ Section Compile.
 
   Local Hint Extern 1 (spec_of _) => (simple refine (@spec_of_to_bytes _ _ _ _ _ _ _ _)) : typeclass_instances.
 
-  Lemma F_to_Z_to_bytes x : Z_to_bytes (F.to_Z x) = 
-
   Lemma compile_to_bytes {tr m l functions} x :
-    let v : list _ := Z_to_bytes (F.to_Z x) encoded_felem_size_in_bytes in
+    let v : list _ := fencode_bytes x in
     forall P (pred: P v -> predicate) (k: nlet_eq_k P v) k_impl
            Rx R x_ptr x_var out out_ptr out_var,
 
@@ -417,23 +415,8 @@ Section Compile.
       <{ pred (nlet_eq [out_var] v k) }>.
   Proof using env_ok ext_spec_ok locals_ok mem_ok word_ok.
     repeat straightline'.
-    subst v.
     unfold FElem in *.
-    sepsimpl;
-    eapply Proper_call; [ |eapply H]; cycle 1;
-     [ ssplit;
-        lazymatch goal with
-        | |- (_ ⋆ _) _ => ecancel_assumption
-        | |- exists R, (_ ⋆ R) _ => eexists; ecancel_assumption
-        | _ => idtac
-        end
-     | cbv[postcondition_func postcondition_func_norets] in *;
-        repeat straightline; destruct_lists_of_known_length;
-        repeat straightline ].
-    { unfold maybe_bounded in *; eauto. }
-    intros ? ? ? ?; repeat straightline'.
-    subst.
-    subst; eauto.
+    sepsimpl; prove_field_compilation.
   Qed.
 End Compile.
 
