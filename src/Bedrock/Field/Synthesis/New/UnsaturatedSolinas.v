@@ -298,7 +298,8 @@ Section UnsaturatedSolinas.
         by eauto with bounds
     end.
   Ltac FtoZ :=
-    apply F.eq_of_Z_iff; rewrite ?F.to_Z_of_Z;
+    apply (F.eq_of_Z_iff (m:=@M_pos prime_field_parameters));
+    rewrite ?F.to_Z_of_Z;
     cbv [M] in M_eq; rewrite ?M_eq; pull_Zmod.
 
   Ltac loosen_bounds := lazymatch goal with
@@ -490,8 +491,8 @@ Section UnsaturatedSolinas.
       handle_side_conditions; [ loosen_bounds | bounds_length | | ].
     { (* output *value* is correct *)
       intros. specialize_correctness_hyp Hcorrect.
-      destruct Hcorrect.
-      FtoZ. simpl_map_unsigned. congruence. }
+      destruct Hcorrect. simpl_map_unsigned.
+      FtoZ; congruence. }
     { (* output *bounds* are correct *)
       intros. apply Hcorrect; auto. }
   Qed.

@@ -135,8 +135,9 @@ Crypto.Bedrock.Group.ScalarMult.LadderStep
 Crypto.Bedrock.Group.ScalarMult.MontgomeryEquivalence
 Crypto.Bedrock.Group.ScalarMult.MontgomeryLadder
 Crypto.Bedrock.Group.ScalarMult.ScalarMult
-Crypto.Bedrock.Specs.Field
+Crypto.Bedrock.Specs.AbstractField
 Crypto.Bedrock.Specs.Group
+Crypto.Bedrock.Specs.PrimeField
 Crypto.Bedrock.Standalone.StandaloneHaskellMain
 Crypto.Bedrock.Standalone.StandaloneOCamlMain
 Crypto.BoundsPipeline

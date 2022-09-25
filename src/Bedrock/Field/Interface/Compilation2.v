@@ -1,6 +1,7 @@
 Require Import Rupicola.Lib.Api.
 Require Import Rupicola.Lib.Alloc.
 Require Import Crypto.Bedrock.Specs.AbstractField.
+Require Import Crypto.Bedrock.Specs.PrimeField.
 Require Import Crypto.Arithmetic.PrimeFieldTheorems.
 Local Open Scope Z_scope.
 
@@ -17,7 +18,7 @@ Section Compile.
   (*Ideally, we would like to use just an instance of AbstractField.FieldParameters, rather than PrimeFieldParameters.
     However, since generalizing from_word to general fields is on the To-Do list, we leave this as is for now.
     See the comments on from_word in Bedrock/Specs/PrimeField.v*)
-  Context {field_parameters : AbstractField.FieldParameters}.
+  Context {field_parameters : PrimeFieldParameters}.
 
   Context {field_representaton : FieldRepresentation}
           {field_representation_ok : FieldRepresentation_ok}.
@@ -322,19 +323,18 @@ Section Compile.
     repeat straightline'.
     unfold FElem in *.
     sepsimpl.
-    repeat straightline'.
-    straightline_call; [ssplit; eapply H4 |].
-      repeat straightline. 
-      apply H3.
-      eapply Proper_sep_impl1; eauto.
-      2: exact(fun a b => b).
-      intros m' H'. subst.
-      match goal with H : _ |- _ =>
-                      rewrite word.of_Z_unsigned in H end.
-      SpecializeBy.specialize_by_assumption.
-      eexists;
-        sepsimpl;
-        eauto. 
+    prove_field_compilation.
+    apply H3.
+
+    eapply Proper_sep_impl1; eauto.
+    2:exact(fun a b => b).
+    intros m' H'.
+    match goal with H : _ |- _ =>
+                    rewrite word.of_Z_unsigned in H end.
+    SpecializeBy.specialize_by_assumption.
+    eexists;
+      sepsimpl;
+      eauto.
   Qed.
 
   Local Hint Extern 1 (spec_of _) => (simple refine (@spec_of_from_bytes _ _ _ _ _ _ _ _)) : typeclass_instances.
@@ -381,6 +381,7 @@ Section Compile.
     intros m' H'; ssplit; eapply sep_emp_l; ssplit; eauto.
   Qed.
 
+  Local Hint Extern 1 (spec_of _) => (simple refine (@spec_of_to_bytes _ _ _ _ _ _ _ _)) : typeclass_instances.
   Lemma compile_to_bytes {tr m l functions} x :
     let v : list _ := Z_to_bytes (F.to_Z x) encoded_felem_size_in_bytes in
     forall P (pred: P v -> predicate) (k: nlet_eq_k P v) k_impl
@@ -428,6 +429,7 @@ Section Compile.
         repeat straightline ].
     { unfold maybe_bounded in *; eauto. }
     intros ? ? ? ?; repeat straightline'.
+    subst.
     subst; eauto.
   Qed.
 End Compile.

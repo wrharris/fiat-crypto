@@ -71,7 +71,7 @@ Class PrimeFieldParameters :=
         - exact select_znz.
         - exact felem_copy.
         - exact from_word.
-    Defined. 
+    Defined.
 
     Instance prime_field_parameters_ok : @AbstractField.FieldParameters_ok prime_field_parameters.
     Proof.
@@ -82,7 +82,7 @@ Class PrimeFieldParameters :=
             {ext_spec : bedrock2.Semantics.ExtSpec}
             {field_representation : FieldRepresentation}
             {field_representation_ok : FieldRepresentation_ok}.
-      
+
     (*Potentially; move this to AbstractField.v
       Arbitrary fields are not supported by general fields, but this could be done using the canonical homomorphism of rings Z -> F.*)
     Instance spec_of_from_word : spec_of from_word :=
@@ -99,15 +99,19 @@ Class PrimeFieldParameters :=
       Definition r := 2 ^ width.
       Definition m' := Z.modinv (- M) r.
       Definition r' := Z.modinv (r) M.
-    
+
       Definition from_mont_model x := F.mul x (@F.of_Z M_pos (r' ^ (Z.of_nat felem_size_in_words)%Z)).
       Definition to_mont_model x := F.mul x (@F.of_Z M_pos (r ^ (Z.of_nat felem_size_in_words)%Z)).
-    
+
       Instance un_from_mont {from_mont : string} : UnOp from_mont :=
         {| un_model := from_mont_model; un_xbounds := tight_bounds; un_outbounds := loose_bounds |}.
-    
+
       Instance un_to_mont {to_mont : string} : UnOp to_mont :=
         {| un_model := to_mont_model; un_xbounds := tight_bounds; un_outbounds := loose_bounds|}.
 
   End Specialized.
 End PrimeField.
+
+(* Help typeclass resolution construct a FieldParameters instance. *)
+#[export] Hint Extern 1 FieldParameters =>
+    simple refine (@prime_field_parameters _) : typeclass_instances.
