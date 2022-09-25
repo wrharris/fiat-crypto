@@ -51,6 +51,7 @@ Section Representation.
   Local Instance frep : FieldRepresentation := {
       feval := eval_words;
       feval_bytes := eval_bytes;
+      fencode_bytes := fun x => Z_to_bytes (F.to_Z x) n_bytes;
       felem_size_in_words := n;
       encoded_felem_size_in_bytes := n_bytes;
       bytes_in_bounds bs := list_in_bounds byte_bounds (map byte.unsigned bs);

@@ -183,7 +183,7 @@ Section __.
   Ltac apply_square :=
       try simple apply compile_nlet_as_nlet_eq;
       epose proof compile_square as Hsquare;
-      cbv [AbstractField.F] in Hsquare; cbv [Compilation2.field_parameters PrimeField.prime_field_parameters] in *;
+      cbv [AbstractField.F] in Hsquare; cbv [PrimeField.prime_field_parameters] in *;
       cbv [AbstractField.square AbstractField.Fsquare Fmul Compilation2.field_parameters] in *;
       rewrite F.pow_2_r;
       eapply Hsquare; clear Hsquare; try repeat compile_step; [ eapply relax_bounds_FElem_R; ecancel_assumption | ..]; repeat compile_step.
