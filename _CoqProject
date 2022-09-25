@@ -154,8 +154,9 @@ src/Bedrock/Group/ScalarMult/LadderStep.v
 src/Bedrock/Group/ScalarMult/MontgomeryEquivalence.v
 src/Bedrock/Group/ScalarMult/MontgomeryLadder.v
 src/Bedrock/Group/ScalarMult/ScalarMult.v
-src/Bedrock/Specs/Field.v
+src/Bedrock/Specs/AbstractField.v
 src/Bedrock/Specs/Group.v
+src/Bedrock/Specs/PrimeField.v
 src/Bedrock/Standalone/StandaloneHaskellMain.v
 src/Bedrock/Standalone/StandaloneOCamlMain.v
 src/Curves/EdwardsMontgomery.v
